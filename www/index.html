@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Smart Emergency Safety System - A fast, reliable, and accessible web application to request urgent assistance, notify emergency contacts, and share geolocation during crises.">
+  <meta name="keywords" content="Emergency, SOS, Safety, Geolocation, First Aid, 112 India, Personal Safety, Prototype">
+  <meta name="author" content="Smart Emergency Safety Team">
+  <meta name="theme-color" content="#0B1B3D">
+  <title>Smart Emergency Safety System | Rapid Assistance & SOS Alert</title>
+  
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main emergency actions</a>
+
+  <!-- Audio element for alert siren (synthesized via Web Audio API, fallback handled in JS) -->
+  <div id="live-announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- Educational Prototype Notice Banner -->
+  <div class="prototype-banner" role="region" aria-label="Prototype Disclaimer">
+    <div class="container banner-inner">
+      <span class="banner-badge">ACADEMIC PROTOTYPE</span>
+      <p class="banner-text">
+        <strong>Notice:</strong> This is an educational demonstration prototype. It prepares distress messages locally and does <em>not</em> directly dispatch government rescue services. In immediate danger, call 
+        <a href="tel:112" class="banner-link"><strong>112 (National Emergency)</strong></a> immediately.
+      </p>
+      <button type="button" class="banner-close" id="dismiss-banner" aria-label="Dismiss disclaimer banner">&times;</button>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <header class="site-header" id="top-nav">
+    <div class="container header-inner">
+      <a href="#hero" class="brand-logo" aria-label="Smart Emergency Safety System Home">
+        <div class="logo-shield">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="shield-icon" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v4"/>
+            <path d="M12 16h.01"/>
+          </svg>
+          <span class="pulse-ring"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">SmartEmergency</span>
+          <span class="brand-sub">Safety & Assistance</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="main-nav" aria-label="Primary Navigation">
+        <ul class="nav-list">
+          <li><a href="#sos-section" class="nav-link active">SOS Hub</a></li>
+          <li><a href="#voice-guard-section" class="nav-link">🎙️ Voice SOS</a></li>
+          <li><a href="#contacts-section" class="nav-link">Emergency Contacts</a></li>
+          <li><a href="#location-section" class="nav-link">Live Location</a></li>
+          <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="#preparedness-section" class="nav-link">First Aid Guide</a></li>
+        </ul>
+      </nav>
+
+      <!-- Quick Action: Emergency 112 Direct Dial -->
+      <div class="header-actions">
+        <a href="tel:112" class="btn-emergency-dial" aria-label="Direct Phone Dial 112 India National Emergency Line" title="Immediate Voice Call to 112">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <span>Call 112</span>
+        </a>
+
+        <!-- Mobile Navigation Hamburger -->
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle navigation menu">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <ul class="mobile-nav-list">
+        <li><a href="#sos-section" class="mobile-nav-link">🚨 Instant SOS</a></li>
+        <li><a href="#voice-guard-section" class="mobile-nav-link">🎙️ Voice SOS Guard</a></li>
+        <li><a href="#contacts-section" class="mobile-nav-link">👥 Trusted Contacts</a></li>
+        <li><a href="#location-section" class="mobile-nav-link">📍 Geolocation Hub</a></li>
+        <li><a href="#how-it-works" class="mobile-nav-link">ℹ️ How It Works</a></li>
+        <li><a href="#features-section" class="mobile-nav-link">✨ System Features</a></li>
+        <li><a href="#preparedness-section" class="mobile-nav-link">🩹 First Aid & Protocols</a></li>
+        <li><a href="#privacy-disclaimer" class="mobile-nav-link">🔒 Privacy & Disclaimer</a></li>
+      </ul>
+      <div class="mobile-quick-call">
+        <a href="tel:112" class="btn btn-danger btn-block">
+          📞 One-Touch Dial 112 (National Helpline)
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="container hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="status-dot"></span>
+            <span>Emergency Preparedness & Fast Response</span>
+          </div>
+          <h1 class="hero-heading">Help Is Just One Click Away.</h1>
+          <p class="hero-subtext">
+            When seconds count, trigger instant distress alerts with your precise GPS coordinates, prefill emergency SMS broadcasts for trusted contacts, and dial national emergency helplines.
+          </p>
+
+          <!-- Quick Helpline Hotlist -->
+          <div class="quick-helpline-grid" aria-label="Direct Emergency Phone Numbers">
+            <a href="tel:112" class="helpline-chip" title="Unified Emergency Line">
+              <span class="chip-num">112</span>
+              <span class="chip-lbl">National SOS</span>
+            </a>
+            <a href="tel:102" class="helpline-chip" title="Ambulance Service">
+              <span class="chip-num">102</span>
+              <span class="chip-lbl">Ambulance</span>
+            </a>
+            <a href="tel:100" class="helpline-chip" title="Police Control Room">
+              <span class="chip-num">100</span>
+              <span class="chip-lbl">Police</span>
+            </a>
+            <a href="tel:1091" class="helpline-chip" title="Women Safety Helpline">
+              <span class="chip-num">1091</span>
+              <span class="chip-lbl">Women Safety</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero SOS Trigger Card -->
+        <div class="hero-sos-card" id="sos-section">
+          <div class="sos-card-glass">
+            <div class="sos-card-header">
+              <h2 class="sos-card-title">Emergency Distress Trigger</h2>
+              <p class="sos-card-desc">Press the SOS button below to initiate emergency response sequence.</p>
+            </div>
+
+            <!-- Big Glowing SOS Button -->
+            <div class="sos-button-wrapper">
+              <div class="sos-pulse-layer layer-3"></div>
+              <div class="sos-pulse-layer layer-2"></div>
+              <div class="sos-pulse-layer layer-1"></div>
+              <button type="button" class="sos-btn" id="trigger-sos-btn" aria-haspopup="dialog" aria-label="Trigger Emergency SOS Alert">
+                <span class="sos-text">SOS</span>
+                <span class="sos-subtext">HOLD OR TAP</span>
+              </button>
+            </div>
+
+            <div class="sos-indicator">
+              <span class="indicator-icon">🔒</span>
+              <span class="indicator-text">Accidental click protection enabled (Confirmation required)</span>
+            </div>
+
+            <!-- Fast Emergency Type Selector Preview -->
+            <div class="emergency-quick-categories">
+              <label class="category-label" for="preset-emergency-type">Select Emergency Category:</label>
+              <div class="category-pills" role="radiogroup" aria-label="Emergency Category">
+                <button type="button" class="pill-btn active" data-type="Medical" role="radio" aria-checked="true">
+                  <span class="pill-icon">🏥</span> Medical
+                </button>
+                <button type="button" class="pill-btn" data-type="Accident" role="radio" aria-checked="false">
+                  <span class="pill-icon">🚗</span> Accident
+                </button>
+                <button type="button" class="pill-btn" data-type="Personal Safety" role="radio" aria-checked="false">
+                  <span class="pill-icon">🛡️</span> Safety
+                </button>
+                <button type="button" class="pill-btn" data-type="Other" role="radio" aria-checked="false">
+                  <span class="pill-icon">⚠️</span> Other
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Latest Generated Alert Banner (Populates dynamically after SOS) -->
+    <section class="container active-alert-container" id="active-alert-box" style="display: none;" aria-live="polite">
+      <div class="alert-banner-card">
+        <div class="alert-banner-header">
+          <div class="alert-banner-status">
+            <span class="badge-status-pulse"></span>
+            <span class="badge-status-title">EMERGENCY ALERT GENERATED (LOCAL PROTOTYPE)</span>
+          </div>
+          <span class="alert-timestamp" id="alert-display-time">--:--:--</span>
+        </div>
+        <div class="alert-banner-body">
+          <div class="alert-info-row">
+            <div class="alert-info-item">
+              <span class="info-label">Emergency Category</span>
+              <span class="info-value text-danger" id="alert-display-type">Medical</span>
+            </div>
+            <div class="alert-info-item">
+              <span class="info-label">GPS Latitude & Longitude</span>
+              <span class="info-value" id="alert-display-coords">Acquiring...</span>
+            </div>
+            <div class="alert-info-item">
+              <span class="info-label">Accuracy & Status</span>
+              <span class="info-value" id="alert-display-accuracy">Pending verification</span>
+            </div>
+          </div>
+
+          <div class="alert-message-preview">
+            <label for="prepared-message-content"><strong>Generated Distress Message:</strong></label>
+            <div class="textarea-wrapper">
+              <textarea id="prepared-message-content" class="prepared-textarea" readonly rows="3"></textarea>
+              <button type="button" class="btn btn-secondary btn-sm copy-btn" id="copy-alert-msg-btn">
+                📋 Copy Text
+              </button>
+            </div>
+          </div>
+
+          <!-- Alert Action Grid -->
+          <div class="alert-action-grid">
+            <button type="button" class="btn btn-primary" id="broadcast-contacts-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Open SMS with Prefilled Message
+            </button>
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline" id="alert-map-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                <line x1="8" y1="2" x2="8" y2="18"></line>
+                <line x1="16" y1="6" x2="16" y2="22"></line>
+              </svg>
+              Open in Google Maps
+            </a>
+            <button type="button" class="btn btn-warning" id="sound-beacon-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+              <span id="sound-btn-text">Sound Alarm Siren</span>
+            </button>
+            <a href="tel:112" class="btn btn-danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              Call 112 (Emergency)
+            </a>
+          </div>
+
+          <div class="prototype-explanation-box">
+            <span class="info-badge">SYSTEM CLARIFICATION</span>
+            <p>
+              This alert is currently formulated as a <strong>local prototype action</strong>. The system has drafted your distress message and mapped your coordinates. In a full production deployment with telecom/cloud API gateways (e.g., Twilio or government ERSS API), this would automatically dispatch packets. Currently, clicking "Open SMS" opens your device's native messaging client with the prepared text for you to review and send.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Emergency Contacts Section -->
+    <section class="section bg-light" id="contacts-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">GUARDIAN NETWORK</span>
+          <h2 class="section-title">Trusted Emergency Contacts</h2>
+          <p class="section-subtitle">
+            Register your family members, friends, or neighbors. When an emergency is triggered, distress notifications are pre-formatted for these individuals.
+          </p>
+        </div>
+
+        <div class="contacts-grid-layout">
+          <!-- Add Contact Form Card -->
+          <div class="card card-form">
+            <div class="card-header">
+              <h3 class="card-title" id="contact-form-title">
+                <span class="icon-circle">👤</span> Add Emergency Contact
+              </h3>
+              <p class="card-desc">Contacts are stored securely on this device's local browser storage.</p>
+            </div>
+            <form id="contact-form" class="styled-form" novalidate>
+              <input type="hidden" id="edit-contact-id" value="">
+              
+              <div class="form-group">
+                <label for="contact-name" class="form-label">Full Name <span class="required">*</span></label>
+                <input type="text" id="contact-name" class="form-control" placeholder="e.g. Ramesh Sharma" required minlength="2" maxlength="50" autocomplete="name">
+                <div class="field-error" id="name-error" aria-live="polite"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="contact-phone" class="form-label">Mobile Phone Number <span class="required">*</span></label>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">🇮🇳 +91</span>
+                  <input type="tel" id="contact-phone" class="form-control" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" autocomplete="tel">
+                </div>
+                <small class="form-help">Enter valid 10-digit Indian mobile number</small>
+                <div class="field-error" id="phone-error" aria-live="polite"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="contact-relation" class="form-label">Relationship <span class="required">*</span></label>
+                <select id="contact-relation" class="form-control" required>
+                  <option value="">Select relationship</option>
+                  <option value="Parent">Parent</option>
+                  <option value="Spouse">Spouse / Partner</option>
+                  <option value="Sibling">Sibling</option>
+                  <option value="Child">Child</option>
+                  <option value="Friend">Friend</option>
+                  <option value="Neighbor">Neighbor</option>
+                  <option value="Colleague">Colleague / Coworker</option>
+                  <option value="Doctor">Doctor / Caregiver</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div class="field-error" id="relation-error" aria-live="polite"></div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-block" id="save-contact-btn">
+                  Save Contact
+                </button>
+                <button type="button" class="btn btn-secondary btn-block" id="cancel-edit-btn" style="display: none;">
+                  Cancel Edit
+                </button>
+              </div>
+            </form>
+
+            <div class="storage-warning-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="warning-icon" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <div class="warning-text">
+                <strong>Storage Privacy Notice:</strong> Contact details are saved in your browser's <code>localStorage</code>. This data stays entirely on your computer/phone and is never transmitted to any third-party marketing servers.
+              </div>
+            </div>
+          </div>
+
+          <!-- Contacts List Display Card -->
+          <div class="card card-list">
+            <div class="card-header list-header">
+              <div>
+                <h3 class="card-title">Saved Contacts (<span id="contacts-count">0</span>)</h3>
+                <p class="card-desc">Your primary emergency notification ring.</p>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm" id="load-sample-contacts-btn" title="Add default demo contacts for presentation testing">
+                + Add Demo Contacts
+              </button>
+            </div>
+
+            <!-- Empty State -->
+            <div id="no-contacts-state" class="empty-state">
+              <div class="empty-icon">👥</div>
+              <h4 class="empty-title">No Emergency Contacts Registered</h4>
+              <p class="empty-desc">Add at least 2 trusted individuals who should be informed in case of medical, safety, or accident emergencies.</p>
+              <button type="button" class="btn btn-secondary btn-sm" id="empty-state-sample-btn">Load Demo Sample Contacts</button>
+            </div>
+
+            <!-- Contacts Grid -->
+            <div id="contacts-list" class="contacts-cards-list" role="list"></div>
+
+            <!-- Batch SMS Broadcast Options -->
+            <div id="batch-sms-container" class="batch-sms-box" style="display: none;">
+              <h4 class="batch-title">Direct Contact Messaging</h4>
+              <p class="batch-desc">Tap below to open your phone's default SMS app prefilled with your latest emergency distress text:</p>
+              <div id="quick-sms-links-list" class="quick-sms-pills"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Location Sharing Hub Section -->
+    <section class="section" id="location-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">GEOLOCATION PRIVACY & ACCURACY</span>
+          <h2 class="section-title">GPS Location Sharing Hub</h2>
+          <p class="section-subtitle">
+            Pinpoint your real-time coordinates only when you grant permission. We adhere to zero-background tracking.
+          </p>
+        </div>
+
+        <div class="location-grid-layout">
+          <!-- Location Details Card -->
+          <div class="card location-info-card">
+            <div class="card-header">
+              <div class="location-status-badge" id="location-status-badge">
+                <span class="badge-dot status-idle"></span>
+                <span id="location-status-text">Location Idle (Awaiting Request)</span>
+              </div>
+              <h3 class="card-title">Live Coordinates Inspection</h3>
+            </div>
+
+            <div class="location-metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">Latitude</span>
+                <span class="metric-val" id="metric-lat">--</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Longitude</span>
+                <span class="metric-val" id="metric-lng">--</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">GPS Accuracy</span>
+                <span class="metric-val" id="metric-acc">--</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Timestamp</span>
+                <span class="metric-val" id="metric-time">--</span>
+              </div>
+            </div>
+
+            <!-- Geolocation Feedback Messages -->
+            <div id="location-feedback-alert" class="feedback-alert" style="display: none;" role="alert"></div>
+
+            <!-- Location Actions -->
+            <div class="location-action-bar">
+              <button type="button" class="btn btn-primary" id="get-location-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polygon points="12 8 8 12 12 16 12 13 16 13 16 11 12 11 12 8"></polygon>
+                </svg>
+                <span id="get-loc-btn-text">Acquire My Location</span>
+              </button>
+              <button type="button" class="btn btn-secondary" id="retry-location-btn" style="display: none;">
+                🔄 Retry Accuracy
+              </button>
+              <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline" id="view-maps-btn" style="display: none;">
+                🗺️ View in Google Maps
+              </a>
+            </div>
+
+            <!-- Privacy Guarantee Box -->
+            <div class="privacy-guarantee">
+              <div class="guarantee-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shield-check-icon">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <polyline points="9 11 12 14 22 4"></polyline>
+                </svg>
+                <strong>Strict Privacy & Consent Principles:</strong>
+              </div>
+              <ul class="guarantee-list">
+                <li>No background geolocation monitoring or tracking when you leave the page.</li>
+                <li>Location is only queried upon your explicit click or emergency SOS confirmation.</li>
+                <li>Coordinates are stored purely inside temporary browser session memory.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Interactive Map View / Visual Coordinates Card -->
+          <div class="card map-preview-card">
+            <div class="card-header">
+              <h3 class="card-title">Geographical Position Preview</h3>
+              <p class="card-desc">Visual pin of current acquired coordinates</p>
+            </div>
+            
+            <div class="map-viewport" id="map-viewport">
+              <div class="map-placeholder" id="map-placeholder">
+                <div class="radar-scan">
+                  <div class="radar-sweep"></div>
+                  <div class="radar-dot"></div>
+                </div>
+                <p class="radar-text">Click "Acquire My Location" to establish GPS satellite fix and render the live coordinate map.</p>
+              </div>
+              <iframe id="map-iframe" class="map-frame" title="Interactive Google Maps Location Pin" style="display: none;" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+            </div>
+
+            <div class="map-footer-coords" id="map-footer-coords" style="display: none;">
+              <span id="map-readable-pin">📍 Coordinates: Pending</span>
+              <a href="#" target="_blank" rel="noopener noreferrer" id="map-direct-ext-link" class="link-small">External Maps Link &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section (3 Simple Steps) -->
+    <section class="section bg-light" id="how-it-works">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">SIMPLICITY IN EMERGENCIES</span>
+          <h2 class="section-title">How It Works in 3 Fast Steps</h2>
+          <p class="section-subtitle">
+            Designed intuitively for people of all ages to eliminate panic during critical moments.
+          </p>
+        </div>
+
+        <div class="steps-grid">
+          <!-- Step 1 -->
+          <div class="step-card">
+            <div class="step-badge">1</div>
+            <div class="step-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="step-icon">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h3 class="step-title">Tap the Red SOS</h3>
+            <p class="step-desc">
+              Click the high-contrast SOS button. Select your emergency nature (Medical, Accident, Personal Threat, or Other). A safety confirmation guards against accidental taps.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card">
+            <div class="step-badge">2</div>
+            <div class="step-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="step-icon">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                <line x1="8" y1="2" x2="8" y2="18"></line>
+                <line x1="16" y1="6" x2="16" y2="22"></line>
+              </svg>
+            </div>
+            <h3 class="step-title">Instant GPS Retrieval</h3>
+            <p class="step-desc">
+              The system queries the browser Geolocation API to lock onto your exact latitude, longitude, and accuracy, generating an instant Google Maps hyperlink.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card">
+            <div class="step-badge">3</div>
+            <div class="step-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="step-icon">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <h3 class="step-title">Notify & Dial 112</h3>
+            <p class="step-desc">
+              Your prepared distress payload is ready to dispatch via pre-filled SMS to your guardians, and a single tap initiates an emergency call to India's unified 112 service.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Features Section -->
+    <section class="section" id="features-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">KEY CAPABILITIES</span>
+          <h2 class="section-title">Designed for Critical Moments</h2>
+          <p class="section-subtitle">
+            Reliable engineering principles implemented for high-stress scenarios.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🚨</div>
+            <h3 class="feature-title">Accidental Trigger Guard</h3>
+            <p class="feature-desc">Dual-action confirmation dialogue and modal countdown prevents false alarms while remaining fast to execute under stress.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📍</div>
+            <h3 class="feature-title">High-Accuracy Geolocation</h3>
+            <p class="feature-desc">Utilizes high-precision hardware GPS where available, showing accuracy radius in meters and building automatic Google Maps links.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3 class="feature-title">Native SMS Deep-Linking</h3>
+            <p class="feature-desc">Leverages the <code>sms:</code> URI scheme to open native mobile messaging apps with preformatted distress messages ready to transmit.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3 class="feature-title">Client-Side Data Sovereignty</h3>
+            <p class="feature-desc">All contact lists are retained strictly within browser LocalStorage. No tracking telemetry or unsolicited cloud harvesting.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🔊</div>
+            <h3 class="feature-title">Audio & Visual Siren Strobe</h3>
+            <p class="feature-desc">Integrated Web Audio API synthesizer generates an acoustic distress beacon and visual flashing cue to attract nearby helpers.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🇮🇳</div>
+            <h3 class="feature-title">India 112 Quick-Response Ready</h3>
+            <p class="feature-desc">Integrated speed dials for India's National Emergency 112, Ambulance (102), Police (100), and Women Helpline (1091).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Emergency Preparedness & First Aid Protocols -->
+    <section class="section bg-light" id="preparedness-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">LIFESAVING KNOWLEDGE</span>
+          <h2 class="section-title">Emergency Preparedness & Action Guide</h2>
+          <p class="section-subtitle">
+            Quick, reliable steps to perform while waiting for professional emergency medical or police services.
+          </p>
+        </div>
+
+        <!-- Protocol Tabs -->
+        <div class="protocols-wrapper">
+          <div class="protocol-tabs" role="tablist" aria-label="First Aid Categories">
+            <button type="button" class="tab-btn active" role="tab" id="tab-medical" aria-selected="true" aria-controls="content-medical">
+              🩺 Medical & CPR
+            </button>
+            <button type="button" class="tab-btn" role="tab" id="tab-accident" aria-selected="false" aria-controls="content-accident">
+              🚗 Road Accident
+            </button>
+            <button type="button" class="tab-btn" role="tab" id="tab-safety" aria-selected="false" aria-controls="content-safety">
+              🛡️ Personal Threat
+            </button>
+            <button type="button" class="tab-btn" role="tab" id="tab-fire" aria-selected="false" aria-controls="content-fire">
+              🔥 Fire & Hazard
+            </button>
+          </div>
+
+          <!-- Tab Contents -->
+          <div class="protocol-tab-content">
+            <!-- Medical / CPR -->
+            <div class="protocol-panel active" id="content-medical" role="tabpanel" aria-labelledby="tab-medical">
+              <div class="panel-layout">
+                <div class="panel-info">
+                  <h3>Adult CPR & Severe Medical Response</h3>
+                  <p class="panel-intro">If someone is unresponsive and not breathing normally:</p>
+                  <ol class="panel-steps">
+                    <li><strong>Check Responsiveness:</strong> Gently tap shoulders and shout "Are you okay?". Check if breathing.</li>
+                    <li><strong>Call 112 / 102 Immediately:</strong> Put on speakerphone while starting care.</li>
+                    <li><strong>Hand-Only CPR:</strong> Place hands in the center of the chest. Push hard and fast at 100–120 beats per minute (e.g. to the tempo of "Stayin' Alive").</li>
+                    <li><strong>Allow Full Chest Recoil:</strong> Compress down at least 2 inches (5 cm) each beat without leaning on chest between compressions.</li>
+                  </ol>
+                </div>
+                <div class="panel-card highlight-card">
+                  <h4>⚠️ Heart Attack Signs</h4>
+                  <ul>
+                    <li>Chest pain, pressure, fullness or squeezing</li>
+                    <li>Pain radiating to jaw, left arm, neck, or back</li>
+                    <li>Shortness of breath, dizziness, cold sweat</li>
+                    <li><strong>Action:</strong> Keep patient calm and seated. Do not let them walk. Call 102/112 immediately.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Road Accident -->
+            <div class="protocol-panel" id="content-accident" role="tabpanel" aria-labelledby="tab-accident" hidden>
+              <div class="panel-layout">
+                <div class="panel-info">
+                  <h3>Road Collision & Trauma Response</h3>
+                  <p class="panel-intro">Prioritize scene safety and prevent secondary collisions:</p>
+                  <ol class="panel-steps">
+                    <li><strong>Secure the Scene:</strong> Turn on vehicle hazard lights. Place reflective warning triangles at least 30 meters back.</li>
+                    <li><strong>Do Not Move Victims:</strong> Never move a victim with potential neck/spine injuries unless there is an immediate fire or drowning risk.</li>
+                    <li><strong>Control Heavy Bleeding:</strong> Apply firm, direct pressure over open wounds with a clean cloth. Do not remove penetrating objects.</li>
+                    <li><strong>Good Samaritan Protection:</strong> Under Indian law (Supreme Court Guidelines), Good Samaritans helping accident victims are exempt from civil and criminal liability and cannot be harassed.</li>
+                  </ol>
+                </div>
+                <div class="panel-card highlight-card">
+                  <h4>📞 Critical Numbers</h4>
+                  <ul>
+                    <li><strong>112:</strong> Unified Emergency Police & Rescue</li>
+                    <li><strong>1073:</strong> National Highway Accident Helpline</li>
+                    <li><strong>102 / 108:</strong> Emergency Ambulance Dispatch</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Personal Threat -->
+            <div class="protocol-panel" id="content-safety" role="tabpanel" aria-labelledby="tab-safety" hidden>
+              <div class="panel-layout">
+                <div class="panel-info">
+                  <h3>Personal Safety & Harassment Protocol</h3>
+                  <p class="panel-intro">When feeling unsafe, being followed, or facing immediate threat:</p>
+                  <ol class="panel-steps">
+                    <li><strong>Trust Your Instincts:</strong> Head towards public, well-lit spaces, shops, metro stations, or security booths.</li>
+                    <li><strong>Trigger Silent SOS / Broadcast:</strong> Share your live location link with your trusted contacts network immediately.</li>
+                    <li><strong>Make Noise if Necessary:</strong> Use the Audio Beacon Alarm or shout "Fire!" or "Help!" to draw immediate attention.</li>
+                    <li><strong>Call 1091 / 112:</strong> Women Helpline 1091 provides dedicated rapid police intervention.</li>
+                  </ol>
+                </div>
+                <div class="panel-card highlight-card">
+                  <h4>🛡️ Digital Safety Habit</h4>
+                  <ul>
+                    <li>Keep trusted contacts updated before traveling alone late at night.</li>
+                    <li>Keep phone location services enabled in advance.</li>
+                    <li>Keep phone battery charged above 25% when in transit.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fire & Hazard -->
+            <div class="protocol-panel" id="content-fire" role="tabpanel" aria-labelledby="tab-fire" hidden>
+              <div class="panel-layout">
+                <div class="panel-info">
+                  <h3>Fire, Smoke & Chemical Hazard Protocol</h3>
+                  <p class="panel-intro">In the event of a residential or workplace fire outbreak:</p>
+                  <ol class="panel-steps">
+                    <li><strong>Crawl Low in Smoke:</strong> Smoke and toxic fumes rise. Stay near the floor where air is cleaner.</li>
+                    <li><strong>Feel Doors Before Opening:</strong> Use the back of your hand to feel the doorknob. If hot, do not open—find an alternate exit.</li>
+                    <li><strong>Never Use Elevators:</strong> Always evacuate using fire exit stairs.</li>
+                    <li><strong>Call 101 / 112:</strong> Inform the Fire Brigade of your exact floor and building address immediately.</li>
+                  </ol>
+                </div>
+                <div class="panel-card highlight-card">
+                  <h4>🧯 Fire Extinguisher (P.A.S.S.)</h4>
+                  <ul>
+                    <li><strong>P</strong>ull the safety pin.</li>
+                    <li><strong>A</strong>im at the base of the fire.</li>
+                    <li><strong>S</strong>queeze the handle lever.</li>
+                    <li><strong>S</strong>weep from side to side.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voice SOS Guard Interactive Management Center -->
+        <div class="card voice-guard-card" id="voice-guard-section">
+          <div class="card-header voice-header-layout">
+            <div class="voice-title-box">
+              <span class="section-tag">HANDS-FREE EMERGENCY RESPONSE</span>
+              <h3 class="card-title">🎙️ Hands-Free Voice SOS Guard</h3>
+              <p class="card-desc">
+                Enables background microphone analysis for the distress wake-word <strong>"Help me"</strong>. When detected, triggers instant SOS, siren alarm, GPS capture, and trusted contact SMS dispatch.
+              </p>
+            </div>
+            <div class="voice-status-wrapper">
+              <div class="voice-status-badge status-idle" id="voice-status-badge">
+                <span class="badge-dot" id="voice-status-dot"></span>
+                <span id="voice-status-text">Voice Guard Disabled (Opt-In Required)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="voice-controls-grid">
+            <!-- Setting 1: Activation Toggle -->
+            <div class="voice-control-card">
+              <div class="switch-row">
+                <div class="switch-info">
+                  <label for="voice-activation-toggle" class="control-label">Enable Voice SOS Guard</label>
+                  <p class="control-hint">Requires microphone permission. On native Android, launches persistent Foreground Service.</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="voice-activation-toggle">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Setting 2: Emergency Phrase -->
+            <div class="voice-control-card">
+              <label for="voice-trigger-phrase" class="control-label">Configured Emergency Trigger Phrase:</label>
+              <div class="phrase-input-wrapper">
+                <input type="text" id="voice-trigger-phrase" class="form-control" value="help me" placeholder="e.g. help me">
+                <span class="phrase-badge">Active Phrase</span>
+              </div>
+              <small class="form-help">Say clearly: "Help me" or "Help me now" when in distress.</small>
+            </div>
+
+            <!-- Setting 3: Ambient Screen Keep-Awake (Web fallback) -->
+            <div class="voice-control-card">
+              <div class="switch-row">
+                <div class="switch-info">
+                  <label for="voice-wakelock-toggle" class="control-label">Keep Screen Active (Ambient Wake Lock)</label>
+                  <p class="control-hint">Recommended for web browsers without native APK: prevents device sleep while monitoring.</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="voice-wakelock-toggle" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Setting 4: Manual Test & Diagnostic Simulation -->
+            <div class="voice-control-card test-action-card">
+              <label class="control-label">Independent Pipeline Verification:</label>
+              <p class="control-hint">Simulate a confirmed voice trigger to test the end-to-end SOS dispatch without vocalizing.</p>
+              <button type="button" class="btn btn-danger btn-sm" id="test-voice-trigger-btn">
+                🧪 Test Voice SOS Trigger ("Help me")
+              </button>
+            </div>
+          </div>
+
+          <!-- Technical Architecture & Restriction Notice -->
+          <div class="voice-architecture-accordion">
+            <details class="tech-details">
+              <summary class="tech-summary">
+                <span>📱 Real Android Background Execution: Technical Realities & Restrictions</span>
+                <span class="summary-arrow">▼</span>
+              </summary>
+              <div class="tech-content">
+                <div class="tech-grid">
+                  <div class="tech-col">
+                    <h5>✅ What Works on Android:</h5>
+                    <ul>
+                      <li><strong>Native Foreground Service:</strong> With <code>FOREGROUND_SERVICE_TYPE_MICROPHONE</code>, Android OS allows microphone capture even when the app is placed in the background or minimized.</li>
+                      <li><strong>Screen Locked / Screen Off:</strong> Using a <code>PARTIAL_WAKE_LOCK</code>, the CPU continues running offline keyword spotting while the display is locked.</li>
+                      <li><strong>Auto-Reboot Recovery:</strong> <code>BootCompletedReceiver</code> automatically relaunches the listening service after phone reboot if the user opted in.</li>
+                    </ul>
+                  </div>
+                  <div class="tech-col">
+                    <h5>⚠️ Hard Operating System Restrictions:</h5>
+                    <ul>
+                      <li><strong>Force-Stop:</strong> If a user force-stops the app via System Settings, Android terminates all background services and alarms until manual reopen.</li>
+                      <li><strong>OEM Aggressive Battery Killers:</strong> Manufacturers (Xiaomi/MIUI, OnePlus/OxygenOS, Samsung OneUI) frequently kill background processes unless exempted under <em>"Battery Optimization &rarr; Don't Optimize / Unrestricted"</em> and <em>"Autostart"</em>.</li>
+                      <li><strong>Android 14+ Microphone Indicator:</strong> Android displays an orange/green microphone privacy indicator in the status bar while the service is listening to ensure user consent.</li>
+                      <li><strong>Pure Web Browsers:</strong> Mobile browsers (Chrome/Safari) suspend Web Audio and Web Speech when the screen locks or tabs switch to protect battery and privacy. For screen-off detection, the native Android APK build is required.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Diagnostic Event Stream -->
+          <div class="voice-diagnostics-box">
+            <div class="diag-header">
+              <span class="diag-title">🔍 Voice Engine Activity Log</span>
+              <span class="diag-status">Live</span>
+            </div>
+            <div id="voice-debug-log" class="debug-terminal" role="log" aria-live="polite">
+              <div class="debug-line">[00:00:00] Voice Guard Engine initialized. Waiting for user opt-in...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SOS Confirmation Modal Dialog -->
+  <div class="modal-backdrop" id="sos-modal" role="dialog" aria-modal="true" aria-labelledby="modal-sos-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-alert-icon">⚠️</div>
+        <div>
+          <h2 class="modal-title" id="modal-sos-title">Confirm Emergency Alert</h2>
+          <p class="modal-subtitle">Preventing accidental trigger. Please confirm to proceed.</p>
+        </div>
+        <button type="button" class="modal-close" id="modal-cancel-x" aria-label="Cancel and close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-type-selection">
+          <label class="modal-label" for="modal-type-select">Confirm Emergency Nature:</label>
+          <div class="modal-type-grid" id="modal-type-grid" role="radiogroup">
+            <button type="button" class="modal-type-btn active" data-type="Medical">
+              <span class="m-icon">🏥</span>
+              <span class="m-title">Medical</span>
+              <span class="m-sub">Health crisis, CPR, trauma</span>
+            </button>
+            <button type="button" class="modal-type-btn" data-type="Accident">
+              <span class="m-icon">🚗</span>
+              <span class="m-title">Accident</span>
+              <span class="m-sub">Crash, collision, injury</span>
+            </button>
+            <button type="button" class="modal-type-btn" data-type="Personal Safety">
+              <span class="m-icon">🛡️</span>
+              <span class="m-title">Personal Safety</span>
+              <span class="m-sub">Harassment, threat, stalker</span>
+            </button>
+            <button type="button" class="modal-type-btn" data-type="Other">
+              <span class="m-icon">⚠️</span>
+              <span class="m-title">Other Hazard</span>
+              <span class="m-sub">Fire, flood, urgent danger</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-action-notice">
+          <strong>What happens when you confirm:</strong>
+          <ul>
+            <li>Your current GPS coordinates will be requested.</li>
+            <li>A detailed distress message with coordinates & Google Maps link will be prepared.</li>
+            <li>Direct SMS triggers for your registered contacts will become active.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="modal-cancel-btn">
+          Cancel (False Alarm)
+        </button>
+        <button type="button" class="btn btn-danger btn-pulse" id="modal-confirm-btn">
+          🚨 Yes, Trigger Emergency Alert
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Contact Confirmation Modal -->
+  <div class="modal-backdrop" id="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" hidden>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <div class="modal-alert-icon icon-yellow">🗑️</div>
+        <div>
+          <h2 class="modal-title" id="delete-modal-title">Delete Contact</h2>
+          <p class="modal-subtitle">Confirm removal of this guardian.</p>
+        </div>
+        <button type="button" class="modal-close" id="delete-cancel-x" aria-label="Cancel deletion">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove <strong id="delete-contact-name-display"></strong> from your trusted emergency circle?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="delete-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="delete-confirm-btn">Delete Contact</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer" id="privacy-disclaimer">
+    <div class="container footer-content">
+      <div class="footer-grid">
+        <!-- Brand Info -->
+        <div class="footer-col">
+          <div class="brand-logo footer-logo">
+            <div class="logo-shield">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="shield-icon" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="M12 8v4"/>
+                <path d="M12 16h.01"/>
+              </svg>
+            </div>
+            <div class="brand-text">
+              <span class="brand-title">SmartEmergency</span>
+              <span class="brand-sub">Safety & Assistance System</span>
+            </div>
+          </div>
+          <p class="footer-about">
+            A fast, human-centric emergency web tool created for instant crisis communication, guardian notification, and location sharing.
+          </p>
+          <div class="project-tag">BTech CSE Capstone Project Prototype</div>
+        </div>
+
+        <!-- Quick Emergency Lines -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Emergency Helplines (India)</h4>
+          <ul class="footer-links-list">
+            <li><a href="tel:112"><strong>112</strong> - Unified Emergency Services</a></li>
+            <li><a href="tel:102"><strong>102</strong> - Medical Ambulance Service</a></li>
+            <li><a href="tel:100"><strong>100</strong> - Police Emergency Command</a></li>
+            <li><a href="tel:101"><strong>101</strong> - Fire and Rescue Brigade</a></li>
+            <li><a href="tel:1091"><strong>1091</strong> - Women Helpline</a></li>
+            <li><a href="tel:1073"><strong>1073</strong> - National Highway Helpline</a></li>
+          </ul>
+        </div>
+
+        <!-- Privacy Policy Details -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Privacy & Data Notice</h4>
+          <p class="footer-text-sm">
+            <strong>Local Storage Only:</strong> Contact names and phone numbers are stored strictly on the user's local machine via HTML5 LocalStorage.
+          </p>
+          <p class="footer-text-sm">
+            <strong>Location Consent:</strong> Geolocation coordinates are only fetched when explicitly requested via the SOS action or Location button. Zero background tracking.
+          </p>
+        </div>
+
+        <!-- Prototype Disclaimer -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Academic Disclaimer</h4>
+          <div class="disclaimer-callout">
+            <p>
+              This application is an educational prototype developed for demonstration purposes. It does not possess a direct carrier telephony uplink to municipal emergency response systems. In a real-world emergency, always prioritize dialing <strong>112</strong> directly from your mobile device.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Smart Emergency Safety System. Open-Source Educational Prototype. Designed with accessibility & safety first.</p>
+        <div class="footer-badges">
+          <span class="badge-tag">HTML5 / CSS3 / Vanilla JS</span>
+          <span class="badge-tag">No Cloud Tracking</span>
+          <span class="badge-tag">Accessible WCAG AA</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/location.js"></script>
+  <script src="js/contacts.js"></script>
+  <script src="js/sos.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
